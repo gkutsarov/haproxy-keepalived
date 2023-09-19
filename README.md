@@ -9,7 +9,7 @@ The load balancer acts between the user and two(or more) Apache web servers that
 The load balancer passes the requests to the web servers and also checks their health. If one of them is down, all requests will automatically be redirected
 to the remaining web servers. 
 
-In addition to that, the two load balancer nodes monitor each other using a heartbeat. 
+In addition to that for another layer of redundancy, the two load balancer nodes are configured with a **virtual IP** shared between and monitor each other using a heartbeat. 
 If the master fails, the slave becomes the master - users won't notice any disruption of the service.
 
 	            +-----------------+
@@ -68,7 +68,17 @@ Edit the configuration file for haproxy located in: /etc/haproxy/haproxy.conf.
 
 ### Keepalived Setup on both Load Balancers ###
 
+Edit the **/etc/sysctl.conf** file to allow IP forwarding and non-local IP binding which will allow the servers to serve/bind to the virtual IP.
+
+	net.ipv4.ip_forward = 1
+	net.ipv4.ip_nonlocal_bind = 1
+ 
+For the changes to take place run the below line in the terminal.
+ 
+	 sysctl -p /etc/sysctl.conf
+
 yum install keepalived -y
+systemctl enable --now keepalived
 
 Configure IP forwarding and non-local binding
 To enable Keepalived service to forward network packets to the backend servers, you need to enable IP forwarding.
