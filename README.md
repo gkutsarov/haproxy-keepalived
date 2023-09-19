@@ -1,5 +1,5 @@
 ## Note ##
-This setup is done on CentOS 7 using Vagrant and Hyper-V as a hypervisor for the virtual machines. All the configuration for installing and configuring the: httpd(Apache), HAProxy, heartbeat(keepalived) is in the Vagrantfile.
+This setup is done on **CentOS 7** using **Vagrant** and **Hyper-V** as a hypervisor for the virtual machines. All the configuration for installing and configuring the: **httpd**(Apache), **HAProxy**, **keepalived**(keepalived) is in the **Vagrantfile**.
 
 ## Explanation ##
 This document describes how to set up a two-node load balancer in an active/passive configuration 
@@ -30,25 +30,24 @@ If the master fails, the slave becomes the master - users won't notice any disru
 	+-----------------+     +-----------------+
 
 
+### Apache SETUP on both Web Servers ###
 
-Apache SETUP on both Web Servers ***
+yum install httpd -y 
+systemctl enable --now httpd 
+echo "Server 1" > /var/www/html/index.html
+echo "Server 2" > /var/www/html/index.html
 
-yum install httpd -y # Installing the Apache Web Server
-systemctl enable --now httpd # Enable the Apache Web Server to start on boot
-echo "Server 1" > /var/www/html/index.html # Adding a dummy content for the default website. Same is done on Server 2.
+### Firewall SETUP on both Web Servers ###
 
---------------------------------------------------
-|  *** Firewall SETUP on both Web Servers ***       |
---------------------------------------------------
 systemctl enable --now firewalld #Enable firewalld to start on boot
 systemctl start firewalld #Starting firewalld
 firewall-cmd --add-service=http --permanent #Adding http to the allowed services
 firewall-cmd --add-service=https --permanent #Adding https to the allowed services
 firewall-cmd --reload #Reloading the firewall for the changes to be applied.
 
---------------------------------------------------
-|  *** HAProxy Setup on both Load Balancers ***  |
---------------------------------------------------
+
+### HAProxy Setup on both Load Balancers ###
+
 Edit the configuration file for haproxy located in: /etc/haproxy/haproxy.conf.
 
 frontend http-balance
@@ -66,9 +65,9 @@ balance roundrobin
 server server1 192.168.0.102:80 check
 server server2 192.168.0.103:80 check
 
---------------------------------------------------
-|*** Keepalived Setup on both Load Balancers *** |
---------------------------------------------------
+
+### Keepalived Setup on both Load Balancers ###
+
 yum install keepalived -y
 
 Configure IP forwarding and non-local binding
