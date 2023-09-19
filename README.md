@@ -80,8 +80,7 @@ For the changes to take place run the below line in the terminal.
 ### Keepalived Setup on both Load Balancers ###
 
 Edit the config file located in: **/etc/keepalived/keepalived.conf**
-
-	> HAProxy 1
+Respectively the **unicast_scr_ip** and **unicast_peer** are switched on the HAProxy 2 server. 
 	
 	vrrp_script chk_haproxy {
 		script "killall -0 haproxy"
@@ -102,38 +101,6 @@ Edit the config file located in: **/etc/keepalived/keepalived.conf**
 		unicast_src_ip 192.168.0.100
 		unicast_peer {
 			192.168.0.101
-	}
-	
-	virtual_ipaddress {
-		192.168.0.110
-	}
-	track_script {
-	chk_haproxy
-	}
-	}
-
-
-	> HAProxy 2
-	
-	vrrp_script chk_haproxy {
-		script "killall -0 haproxy"
-		interval 2
-		weight 2
-	}
-	
-	vrrp_instance VI_1 {
-		state MASTER
-		interface eth0
-		virtual_router_id 51
-		priority 140
-		advert_int 1
-		authentication {
-			auth_type PASS
-			auth_pass 1111
-		}
-		unicast_src_ip 192.168.0.101
-		unicast_peer {
-			192.168.0.100
 	}
 	
 	virtual_ipaddress {
