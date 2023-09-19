@@ -81,68 +81,68 @@ For the changes to take place run the below line in the terminal.
 
 Edit the config file located in: **/etc/keepalived/keepalived.conf**
 
-*** MASTER ***
-
-vrrp_script chk_haproxy {
-	script "killall -0 haproxy"
-	interval 2
-	weight 2
-}
-
-vrrp_instance VI_1 {
-	state MASTER
-	interface eth0
-	virtual_router_id 51
-	priority 150
-	advert_int 1
-	authentication {
-		auth_type PASS
-		auth_pass 1111
+	*** HAProxy 1 ***
+	
+	vrrp_script chk_haproxy {
+		script "killall -0 haproxy"
+		interval 2
+		weight 2
 	}
-	unicast_src_ip 192.168.0.100
-	unicast_peer {
-		192.168.0.101
-}
-
-virtual_ipaddress {
-	192.168.0.110
-}
-track_script {
-chk_haproxy
-}
-}
-
-
-*** SLAVE ***
-
-vrrp_script chk_haproxy {
-	script "killall -0 haproxy"
-	interval 2
-	weight 2
-}
-
-vrrp_instance VI_1 {
-	state MASTER
-	interface eth0
-	virtual_router_id 51
-	priority 140
-	advert_int 1
-	authentication {
-		auth_type PASS
-		auth_pass 1111
+	
+	vrrp_instance VI_1 {
+		state MASTER
+		interface eth0
+		virtual_router_id 51
+		priority 150
+		advert_int 1
+		authentication {
+			auth_type PASS
+			auth_pass 1111
+		}
+		unicast_src_ip 192.168.0.100
+		unicast_peer {
+			192.168.0.101
 	}
-	unicast_src_ip 192.168.0.101
-	unicast_peer {
-		192.168.0.100
-}
+	
+	virtual_ipaddress {
+		192.168.0.110
+	}
+	track_script {
+	chk_haproxy
+	}
+	}
 
-virtual_ipaddress {
-	192.168.0.110
-}
-track_script {
-chk_haproxy
-}
-}
+
+	*** HAProxy 2 ***
+	
+	vrrp_script chk_haproxy {
+		script "killall -0 haproxy"
+		interval 2
+		weight 2
+	}
+	
+	vrrp_instance VI_1 {
+		state MASTER
+		interface eth0
+		virtual_router_id 51
+		priority 140
+		advert_int 1
+		authentication {
+			auth_type PASS
+			auth_pass 1111
+		}
+		unicast_src_ip 192.168.0.101
+		unicast_peer {
+			192.168.0.100
+	}
+	
+	virtual_ipaddress {
+		192.168.0.110
+	}
+	track_script {
+	chk_haproxy
+	}
+	}
 
 
 
