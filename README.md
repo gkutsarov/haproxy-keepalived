@@ -3,34 +3,34 @@ This setup is done on CentOS 7 using Vagrant and Hyper-V as a hypervisor for the
 This document describes how to set up a two-node load balancer in an active/passive configuration 
 with HAProxy and heartbeat monitoring the state of load balancers.
 
-The load balancer acts between the user and two(or more) Apache web servers that holds the same content.
-The load balancer passess the requests to the web servers and also checks their health. If one of them is down, all requests will automatically be redirected
+The load balancer acts between the user and two(or more) Apache web servers that hold the same content.
+The load balancer passes the requests to the web servers and also checks their health. If one of them is down, all requests will automatically be redirected
 to the remaining web servers. 
 
-In addition to that, the two load balancer nodes monitor each other using heartbeat. 
+In addition to that, the two load balancer nodes monitor each other using a heartbeat. 
 If the master fails, the slave becomes the master - users won't notice any disruption of the service.
 
-            +-----------------+
-            |  192.168.0.110  |
-            |   Floating IP   |
-            +--------+--------+
-                     |
-         +----------------------+
-         |                      |
-+--------+--------+    +--------+--------+
-|  192.168.0.100  |    |  192.168.0.101  |
-|    HAProxy 1    |    |     HAProxy 2   | 
-+--------+--------+    +--------+--------+
+	            +-----------------+
+	            |  192.168.0.110  |
+	            |   Floating IP   |
+	            +--------+--------+
+	                     |
+	         +-----------------------+
+	         |                       |
+	+--------+--------+     +--------+--------+
+	|  192.168.0.100  |     |  192.168.0.101  |
+	|    HAProxy 1    |     |    HAProxy 2    | 
+	+--------+--------+     +--------+--------+
+	
+	+--------+--------+     +--------+--------+
+	|  192.168.0.102  |     |  192.168.0.103  |
+	|  Web Server 1   |     |  Web Server 2   |
+	+-----------------+     +-----------------+
 
-+--------+--------+    +--------+--------+
-|  192.168.0.102  |    |  192.168.0.103  |
-|  Web Server 1   |    |  Web Server 2   |
-+-----------------+    +-----------------+
 
 
---------------------------------------------------
-|  *** Apache SETUP on both Web Servers ***       |
---------------------------------------------------
+*** Apache SETUP on both Web Servers ***
+
 yum install httpd -y # Installing the Apache Web Server
 systemctl enable --now httpd # Enable the Apache Web Server to start on boot
 echo "Server 1" > /var/www/html/index.html # Adding a dummy content for the default website. Same is done on Server 2.
