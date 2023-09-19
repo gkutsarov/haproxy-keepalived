@@ -81,7 +81,7 @@ For the changes to take place run the below line in the terminal.
 
 Edit the config file located in: **/etc/keepalived/keepalived.conf**
 
-	*** HAProxy 1 ***
+	> HAProxy 1
 	
 	vrrp_script chk_haproxy {
 		script "killall -0 haproxy"
@@ -113,7 +113,7 @@ Edit the config file located in: **/etc/keepalived/keepalived.conf**
 	}
 
 
-	*** HAProxy 2 ***
+	> HAProxy 2
 	
 	vrrp_script chk_haproxy {
 		script "killall -0 haproxy"
