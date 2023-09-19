@@ -66,7 +66,7 @@ Edit the configuration file for haproxy located in: /etc/haproxy/haproxy.conf.
 	server server2 192.168.0.103:80 check
 
 
-### Keepalived Setup on both Load Balancers ###
+### Allow IP Forwarding and non-local IP binding ###
 
 Edit the **/etc/sysctl.conf** file to allow IP forwarding and non-local IP binding which will allow the servers to serve/bind to the virtual IP.
 
@@ -77,22 +77,9 @@ For the changes to take place run the below line in the terminal.
  
 	 sysctl -p /etc/sysctl.conf
 
-yum install keepalived -y
-systemctl enable --now keepalived
+### Keepalived Setup on both Load Balancers ###
 
-Configure IP forwarding and non-local binding
-To enable Keepalived service to forward network packets to the backend servers, you need to enable IP forwarding.
-sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
-
-Similarly, you need to enable HAProxy and Keepalived to bind to non-local IP address, that is to bind to the failover IP address (Floating IP).
-echo "net.ipv4.ip_nonlocal_bind = 1" >> /etc/sysctl.conf
-
-Reload sysctl settings;
-sysctl -p
-
-Configure Keepalived
-
-vim /etc/keepalived/keepalived.conf
+Edit the config file located in: **/etc/keepalived/keepalived.conf**
 
 *** MASTER ***
 
@@ -106,26 +93,25 @@ vrrp_instance VI_1 {
 	state MASTER
 	interface eth0
 	virtual_router_id 51
-	priority 101
+	priority 150
 	advert_int 1
 	authentication {
 		auth_type PASS
 		auth_pass 1111
 	}
-	unicast_src_ip 192.168.0.110
+	unicast_src_ip 192.168.0.100
 	unicast_peer {
-		192.168.0.111
+		192.168.0.101
 }
 
 virtual_ipaddress {
-	192.168.0.120
+	192.168.0.110
 }
 track_script {
 chk_haproxy
 }
 }
 
-*** END MASTER ***
 
 *** SLAVE ***
 
@@ -139,26 +125,24 @@ vrrp_instance VI_1 {
 	state MASTER
 	interface eth0
 	virtual_router_id 51
-	priority 100
+	priority 140
 	advert_int 1
 	authentication {
 		auth_type PASS
 		auth_pass 1111
 	}
-	unicast_src_ip 192.168.0.111
+	unicast_src_ip 192.168.0.101
 	unicast_peer {
-		192.168.0.110
+		192.168.0.100
 }
 
 virtual_ipaddress {
-	192.168.0.120
+	192.168.0.110
 }
 track_script {
 chk_haproxy
 }
 }
-
-*** END SLAVE ***
 
 
 
