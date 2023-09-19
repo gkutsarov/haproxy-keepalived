@@ -1,5 +1,5 @@
 ## Note ##
-This setup is done on **CentOS 7** using **Vagrant** and **Hyper-V** as a hypervisor for the virtual machines. All the configuration for installing and configuring the: **httpd**(Apache), **HAProxy**, **keepalived**(keepalived) is in the **Vagrantfile**.
+This setup is done on **CentOS 7** using **Vagrant** and **Hyper-V** as a hypervisor for the virtual machines. All the configuration for installing and configuring the: **httpd**, **HAProxy**, **keepalived** is in the **Vagrantfile**.
 
 ## Explanation ##
 This document describes how to set up a two-node load balancer in an active/passive configuration 
@@ -80,6 +80,7 @@ For the changes to take place run the below line in the terminal.
 ### Keepalived Setup on both Load Balancers ###
 
 Edit the config file located in: **/etc/keepalived/keepalived.conf**
+
 Respectively the **unicast_scr_ip** and **unicast_peer** are switched on the HAProxy 2 server. 
 	
 	vrrp_script chk_haproxy {
