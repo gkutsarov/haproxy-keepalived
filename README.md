@@ -1,5 +1,7 @@
+## Note ##
 This setup is done on CentOS 7 using Vagrant and Hyper-V as a hypervisor for the virtual machines. All the configuration for installing and configuring the: httpd(Apache), HAProxy, heartbeat(keepalived) is in the Vagrantfile.
 
+## Explanation ##
 This document describes how to set up a two-node load balancer in an active/passive configuration 
 with HAProxy and heartbeat monitoring the state of load balancers.
 
@@ -29,7 +31,7 @@ If the master fails, the slave becomes the master - users won't notice any disru
 
 
 
-*** Apache SETUP on both Web Servers ***
+Apache SETUP on both Web Servers ***
 
 yum install httpd -y # Installing the Apache Web Server
 systemctl enable --now httpd # Enable the Apache Web Server to start on boot
